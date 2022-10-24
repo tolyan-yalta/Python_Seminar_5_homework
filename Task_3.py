@@ -1,5 +1,13 @@
 # Создайте программу для игры в ""Крестики-нолики"".
 
+from os import system, name	# import os module (импорт модуля операционной системы)
+
+def clear():	# define the clear function (метод очистки терминала)
+    if name == 'nt':	# for windows 
+        _ = system('cls')
+    else:	# for mac and linux(here, os.name is 'posix')
+        _ = system('clear')
+
 def is_int(value):  # Проверка введенного значения на целое число
     try:
         int(value)
@@ -397,6 +405,7 @@ if start_game:
         t = logic_start_bot(b)
         f[t] = '\033[1m\033[33mO\033[0m'
         b[t] = 2
+        clear()
         print_game()
         if victory(f):
             print('\033[1m\033[33mВам не повезло!!! Я победил!!!\033[0m')
@@ -405,19 +414,22 @@ if start_game:
             print('\033[1m\033[32mНикто не победил. Ничья\033[0m')
             break
 
-        j = int(input('Введите номер клетки ')) - 1
+        j = int(input('Введите номер клетки -->  ')) - 1
         f[j] = '\033[1m\033[31mX\033[0m'
         b[j] = 1
+        clear()
         print_game()
         if victory(f):
             print('\033[1m\033[31mПоздравляю, Вы победили!!!\033[0m')
             break
 else:
+    clear()
     print_game()
     for i in range(5):
-        j = int(input('Введите номер клетки ')) - 1
+        j = int(input('Введите номер клетки -->  ')) - 1
         f[j] = '\033[1m\033[31mX\033[0m'
         b[j] = 1
+        clear()
         print_game()
         if victory(f):
             print('\033[1m\033[31mПоздравляю, Вы победили!!!\033[0m')
@@ -429,6 +441,7 @@ else:
         t = logic_start_gamer(b)
         f[t] = '\033[1m\033[33mO\033[0m'
         b[t] = 2
+        clear()
         print_game()
         if victory(f):
             print('\033[1m\033[33mВам не повезло!!! Я победил!!!\033[0m')
