@@ -166,15 +166,6 @@ def logic_start_bot(value):
         if -1 < temp < 9:
             return temp
 
-        # if (value[0] and value[2]) == 1: # ветка 1
-        #     return 6
-        # elif (value[1] and value[2]) == 1:
-        #     return 0
-        # elif (value[5] and value[8]) == 1:
-        #     return 2
-        # elif (value[7] and value[7]) == 1:
-        #     return 8
-
     elif value.count(1) == 3:
         temp = logic_attack(value)
         if -1 < temp < 9:
@@ -188,42 +179,6 @@ def logic_start_bot(value):
         elif value[3] == 0 and value[5] == 0:
             return 3
 
-
-        # if (value[0] == 1 and value[6] == 1 and value[7] == 1): # ветка 0
-        #     return 5
-        # elif (value[3] == 1 and value[0] == 1 and value[2] == 1):
-        #     return 7
-        # elif (value[1] == 1 and value[2] == 1 and value[8] == 1):
-        #     return 3
-        # elif (value[6] == 1 and value[8] == 1 and value[5] == 1):
-        #     return 1
-
-        # elif (value[0] == 1 and value[5] == 1 and value[6] == 1):   # ветка 1
-        #     return 1
-        # elif (value[0] == 1 and value[2] == 1 and value[7] == 1):
-        #     return 5
-        # elif (value[2] == 1 and value[8] == 1 and value[3] == 1):
-        #     return 7
-        # elif (value[1] == 1 and value[8] == 1 and value[6] == 1):
-        #     return 3
-
-        # elif (value[3] == 1 and value[0] == 1 and value[2] == 1):   # ветка 2
-        #     return 7
-        # elif (value[1] == 1 and value[2] == 1 and value[8] == 1):
-        #     return 3
-        # elif (value[6] == 1 and value[8] == 1 and value[5] == 1):
-        #     return 1
-        # elif (value[0] == 1 and value[6] == 1 and value[7] == 1):
-        #     return 5
-
-        # elif (value[3] == 1 and value[1] == 1 and value[2] == 1):   # ветка 2 - 2
-        #     return 8
-        # elif (value[1] == 1 and value[5] == 1 and value[8] == 1):
-        #     return 6
-        # elif (value[5] == 1 and value[7] == 1 and value[6] == 1):
-        #     return 0
-        # elif (value[0] == 1 and value[3] == 1 and value[7] == 1):
-        #     return 2
     elif value.count(1) == 4:
         for i in range(9):
             if value[i] == 0:
@@ -239,18 +194,6 @@ def logic_start_gamer(value):
             temp = logic_defense(value)
             if -1 < temp < 9:
                 return temp      
-            # if value[2] == 1:
-            #     return 6
-            # elif value[6] == 1:
-            #     return 2
-            # elif value[1] == 1:
-            #     return 7
-            # elif value[5] == 1:
-            #     return 3
-            # elif value[7] == 1:
-            #     return 1
-            # else:
-            #     return 5
             elif value[8] == 1:
                 return 2
         else:
@@ -391,6 +334,28 @@ def finish(champion):
     else:
         label_finish2.config(image=red_cross)
 
+def press_button_1_9(index):
+    global bot
+    global b
+    if bot:
+        btn_1_9[index].config(command=0 , image=red_cross, relief='sunken')
+        b[index] = 1
+        temp = logic_start_bot(b)
+        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
+        b[temp] = 2
+    else:
+        btn_1_9[index].config(command=0 , image=red_cross, relief='sunken')
+        b[index] = 1
+        temp = logic_start_gamer(b)
+        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
+        b[temp] = 2
+    global count
+    count += 1
+    vict, champion = victory(b)
+    if vict:
+        finish(champion)
+    if count == 5:
+        label_finish1.config(text='         Ничья!')
 
 b = [0 for i in range(1, 10)]
 
@@ -398,203 +363,32 @@ bot = None
 count = 0
 
 def press_btn1():
-    global bot
-    global b
-    if bot:
-        btn1.config(command=0 , image=red_cross, relief='sunken')
-        b[0] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn1.config(command=0 , image=red_cross, relief='sunken')
-        b[0] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 0
+    press_button_1_9(index)
 def press_btn2():
-    global bot
-    global b
-    if bot:
-        btn2.config(command=0 , image=red_cross, relief='sunken')
-        b[1] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn2.config(command=0 , image=red_cross, relief='sunken')
-        b[1] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1  
-    vict, champion = victory(b)
-    if vict:
-        finish(champion) 
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 1
+    press_button_1_9(index)
 def press_btn3():
-    global bot
-    global b
-    if bot:
-        btn3.config(command=0 , image=red_cross, relief='sunken')
-        b[2] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn3.config(command=0 , image=red_cross, relief='sunken')
-        b[2] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 2
+    press_button_1_9(index)
 def press_btn4():
-    global bot
-    global b
-    if bot:
-        btn4.config(command=0 , image=red_cross, relief='sunken')
-        b[3] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn4.config(command=0 , image=red_cross, relief='sunken')
-        b[3] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 3
+    press_button_1_9(index)
 def press_btn5():
-    global bot
-    global b
-    if bot:
-        btn5.config(command=0 , image=red_cross, relief='sunken')
-        b[4] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn5.config(command=0 , image=red_cross, relief='sunken')
-        b[4] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 4
+    press_button_1_9(index)
 def press_btn6():
-    global bot
-    global b
-    if bot:
-        btn6.config(command=0 , image=red_cross, relief='sunken')
-        b[5] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn6.config(command=0 , image=red_cross, relief='sunken')
-        b[5] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 5
+    press_button_1_9(index)
 def press_btn7():
-    global bot
-    global b
-    if bot:
-        btn7.config(command=0 , image=red_cross, relief='sunken')
-        b[6] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn7.config(command=0 , image=red_cross, relief='sunken')
-        b[6] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 6
+    press_button_1_9(index)
 def press_btn8():
-    global bot
-    global b
-    if bot:
-        btn8.config(command=0 , image=red_cross, relief='sunken')
-        b[7] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn8.config(command=0 , image=red_cross, relief='sunken')
-        b[7] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 7
+    press_button_1_9(index)
 def press_btn9():
-    global bot
-    global b
-    if bot:
-        btn9.config(command=0 , image=red_cross, relief='sunken')
-        b[8] = 1
-        temp = logic_start_bot(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    else:
-        btn9.config(command=0 , image=red_cross, relief='sunken')
-        b[8] = 1
-        temp = logic_start_gamer(b)
-        btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
-        b[temp] = 2
-    global count
-    count += 1
-    vict, champion = victory(b)
-    if vict:
-        finish(champion)
-    if count == 5:
-        label_finish1.config(text='         Ничья!')
+    index = 8
+    press_button_1_9(index)
 
 import tkinter as tk
 
