@@ -1,6 +1,10 @@
 # Создайте программу для игры в ""Крестики-нолики"".
 
 def victory(f):
+    # Проверка на завершение игры по победе одной из сторон
+    # В случае если три ячейки в линию принадлежат одной из сторон, то возвращается True и содержимое одной из ячеек
+    # (ячейка может быть любой из трех). Содержимое (1 или 2) указывает кто победил.
+    # Иначе возвращается False и None.
     if f[0] == f[1] == f[2] == 1 or f[0] == f[1] == f[2] == 2:
         return True, f[0]
     elif f[3] == f[4] == f[5] == 1 or f[3] == f[4] == f[5] == 2:
@@ -21,6 +25,9 @@ def victory(f):
         return False, None
 
 def logic_attack(value):
+    # Логика для завершения игры победой.
+    # Если две клетки в линию заняты ботом а третья пустая, то возвращается индекс клетки которую необходимо занять чтобы победить.
+    # Если нет такой возможности, то возвращается 9 (такой клетки нет)
     if value[0] == 2 and value[1] == 2 and value[2] == 0:    # ветка 0
         return 2
     elif value[2] == 2 and value[5] == 2 and value[8] == 0:
@@ -79,6 +86,10 @@ def logic_attack(value):
     return 9
 
 def logic_defense(value):
+    # Логика защиты (используется после логики атаки если нет возможности завершить игру победой)
+    # Если две клетки в линию заняты игроком а третья пустая, то возвращается индекс клетки
+    # которую необходимо занять чтобы предотвратить победу игрока.
+    # # Если нет такой возможности, то возвращается 9 (такой клетки нет)
     if value[0] == 1 and value[1] == 1 and value[2] == 0:    # ветка 0
         return 2
     elif value[2] == 1 and value[5] == 1 and value[8] == 0:
@@ -137,73 +148,108 @@ def logic_defense(value):
     return 9
 
 def logic_start_bot(value):
-    if not (1 in value):    # 1 ход
+    # Логика игры если начинает бот
+    if not (1 in value):
+        # 1 ход. Проверяется наличие хотя бы одной 1 в списке клеток, так как еще ни одной нет,
+        # то возвращается 4 - индекс центральной клетки.
         return 4
-    elif value.count(1) == 1:   # 3 ход
-        if value[0] == 1: # если Х в углу
+    elif value.count(1) == 1:
+        # 3 ход. Подсчитывается количество 1 в клетках, если равно 1, то следовательно 3-й ход в игре (2-й ход бота).
+        if value[0] == 1:
+            # если 1 (клетка игрока) в углу, то возвращается индекс клетки в углу, следующий по часовой стрелке.
             return 2
-        elif value[2] == 1: # если Х в углу
+        elif value[2] == 1:
             return 8
-        elif value[8] == 1: # если Х в углу
+        elif value[8] == 1:
             return 6
-        elif value[6] == 1: # если Х в углу:
+        elif value[6] == 1:
             return 0
                                       
-        if value[1] == 1:   # если Х по центру боковых сторон
+        if value[1] == 1:
+            # если 1 (клетка игрока) по центру боковых сторон, то возвращается индекс клетки в противоположном углу
+            # (это может быть любой из двух противоположных углов)
             return 6
-        elif value[5] == 1: # если Х по центру боковых сторон
+        elif value[5] == 1:
             return 0
-        elif value[7] == 1: # если Х по центру боковых сторон
+        elif value[7] == 1:
             return 2
-        elif value[3] == 1:   # если Х по центру боковых сторон
+        elif value[3] == 1:
             return 8
 
-    elif value.count(1) == 2:   # 5 ход
+    elif value.count(1) == 2:
+        # 5 ход. Подсчитывается количество 1 в клетках, если равно 2, то следовательно 5-й ход в игре (3-й ход бота).
         temp = logic_attack(value)
+        # Проверяется возможность завершить игру победой, если из logic_attack() вернулся индекс от 0 до 8,
+        # то и logic_start_bot() вернет этот индекс
         if -1 < temp < 9:
             return temp
         temp = logic_defense(value)
+        # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+        # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
         if -1 < temp < 9:
             return temp
 
     elif value.count(1) == 3:
+        # 7 ход. Подсчитывается количество 1 в клетках, если равно 3, то следовательно 7-й ход в игре (4-й ход бота).
         temp = logic_attack(value)
+        # Проверяется возможность завершить игру победой, если из logic_attack() вернулся индекс от 0 до 8,
+        # то и logic_start_bot() вернет этот индекс
         if -1 < temp < 9:
             return temp
         temp = logic_defense(value)
+        # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+        # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
         if -1 < temp < 9:
             return temp
 
+        # Два варианта когда не сработает ни logic_attack() ни logic_defense()
         if value[1] == 0 and value[7] == 0:
             return 1
         elif value[3] == 0 and value[5] == 0:
             return 3
 
     elif value.count(1) == 4:
+        # 9 ход. Подсчитывается количество 1 в клетках, если равно 4, то следовательно 9-й ход в игре (5-й ход бота).
+        # Находится последняя пустая клетка и возвращается её индекс
         for i in range(9):
             if value[i] == 0:
                 return i
 
 def logic_start_gamer(value):
-    if value.count(1) == 1: # 2 ход
+    # Логика игры если начинает игрок
+    if value.count(1) == 1:
+        # 2 ход. Подсчитывается количество 1 в клетках, если равно 1, то следовательно 2-й ход в игре (1-й ход бота).
         if value[4] == 1:
+            # Проверяется занята ли центральная клетка. Если занята то возвращается индекс любой угловой клети.
             return 0
+        # Если центральная клетка свободна то возвращается её индекс.
         return 4
     elif value.count(1) == 2:   # 4 ход
-        if value[4] == 1:  
+        # 4 ход. Подсчитывается количество 1 в клетках, если равно 2, то следовательно 4-й ход в игре (2-й ход бота).
+        if value[4] == 1:
+            # Если центральная клетка занята игроком
             temp = logic_defense(value)
+            # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+            # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp      
             elif value[8] == 1:
+                # Вариант когда не сработает ни logic_attack() ни logic_defense()
                 return 2
         else:
+            # Если центральная клетка занята ботом
             temp = logic_attack(value)
+            # Проверяется возможность завершить игру победой, если из logic_attack() вернулся индекс от 0 до 8,
+            # то и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp
             temp = logic_defense(value)
+            # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+            # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp
 
+            # Варианты когда не сработает ни logic_attack() ни logic_defense()
             if value[0]== 1 and value[8] == 1:    # углы напротив друг друга
                 return 1 
             elif value[2]== 1 and value[6] == 1:
@@ -240,22 +286,34 @@ def logic_start_gamer(value):
                 return 5
             elif value[3]== 1 and value[5] == 1:
                 return 1
-    elif value.count(1) == 3:   # 6 ход
+    elif value.count(1) == 3:
+        # 6 ход. Подсчитывается количество 1 в клетках, если равно 3, то следовательно 6-й ход в игре (3-й ход бота).
         if value[4] == 1:
+            # Если центральная клетка занята игроком
             temp = logic_attack(value)
+            # Проверяется возможность завершить игру победой, если из logic_attack() вернулся индекс от 0 до 8,
+            # то и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp
             temp = logic_defense(value)
+            # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+            # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp
         else:
+            # Если центральная клетка занята ботом
             temp = logic_attack(value)
+            # Проверяется возможность завершить игру победой, если из logic_attack() вернулся индекс от 0 до 8,
+            # то и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp
             temp = logic_defense(value)
+            # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+            # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
             if -1 < temp < 9:
                 return temp
 
+            # Варианты когда не сработает ни logic_attack() ни logic_defense()
             if value[7] == 1 and value[3] == 1 and value[1] == 1: # центр - центр - центр
                 return 2
             elif value[3] == 1 and value[1] == 1 and value[5] == 1:
@@ -265,7 +323,7 @@ def logic_start_gamer(value):
             elif value[5] == 1 and value[7] == 1 and value[3] == 1:
                 return 0
 
-            elif value[3] == 1 and value[1] == 1 and value[8] == 1:   # центр - центп рядом угол напротив
+            elif value[3] == 1 and value[1] == 1 and value[8] == 1:   # центр - центр рядом угол напротив
                 return 2
             elif value[2] == 1 and value[5] == 1 and value[6] == 1:
                 return 8
@@ -274,26 +332,35 @@ def logic_start_gamer(value):
             elif value[2] == 1 and value[7] == 1 and value[3] == 1:
                 return 0
 
+            # Если не сработали все условия выше, то возвращается индекс первой попавшейся свободной клетки
             for i in range(9):
                 if value[i] == 0:
                     return i
     elif value.count(1) == 4:   # 8 ход
+        # 8 ход. Подсчитывается количество 1 в клетках, если равно 4, то следовательно 8-й ход в игре (4-й ход бота).
         temp = logic_attack(value)
+        # Проверяется возможность завершить игру победой, если из logic_attack() вернулся индекс от 0 до 8,
+        # то и logic_start_bot() вернет этот индекс
         if -1 < temp < 9:
             return temp
         temp = logic_defense(value)
+        # Проверяется возможность предотвратить завершение игры победой игрока. Если есть угроза, то logic_defense()
+        # вернет индекс клетки которую необходимо занять и logic_start_bot() вернет этот индекс
         if -1 < temp < 9:
             return temp
+        # Если не сработали условия выше, то возвращается индекс первой попавшейся свободной клетки
         for i in range(9):
             if value[i] == 0:
                 return i
     elif value.count(1) == 5:
+        # Уже не помню нафиг нужен этот шаг проверки, кажется для вывода ничьей
         if value[4] == 1:
             return 0
         return 4
 
 
 def clear_field():
+    # Возвращает все в исходное состояние начала игры
     global b
     global count
     b = [0 for i in range(1, 10)]
@@ -313,6 +380,7 @@ def clear_field():
     count = 0
 
 def start_bot():
+    # Нажатие кнопки "Начинает бот"
     global bot
     global b
     global count
@@ -323,11 +391,13 @@ def start_bot():
     count += 1
 
 def start_gamer():
+    # Нажатие кнопки "Начинает игрок"
     global bot
     bot = False
     btn_bot.config(command=0, relief='sunken')
 
 def finish(champion):
+    # В случае победы одной из сторон выводит надпись "Победил" и знак (0 или Х) соответственно
     label_finish1.config(text='Победил:')
     if champion == 2:
         label_finish2.config(image=blue_zero)
@@ -335,26 +405,33 @@ def finish(champion):
         label_finish2.config(image=red_cross)
 
 def press_button_1_9(index):
+    # Основной модуль игры обрабатывающий нажатие кнопок игрового поля
     global bot
     global b
     if bot:
+        # Если bot = True (была нажата "Начинает бот")
         btn_1_9[index].config(command=0 , image=red_cross, relief='sunken')
         b[index] = 1
         temp = logic_start_bot(b)
         btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
         b[temp] = 2
     else:
+        # Если bot = False (была нажата "Начинает игрок")
         btn_1_9[index].config(command=0 , image=red_cross, relief='sunken')
         b[index] = 1
         temp = logic_start_gamer(b)
         btn_1_9[temp].config(command=0, image=blue_zero, relief='sunken')
         b[temp] = 2
     global count
+    # Счетчик ходов
     count += 1
     vict, champion = victory(b)
+    # После каждого хода проверяет на победу одной из сторон
     if vict:
+        # Если victory() вернула True и значение ячейки победителя (1-игрок или 2-бот)
         finish(champion)
     if count == 5:
+        # Если количество ходов одной из сторон достигло 5, то ходов больше нет и результат "Ничья"
         label_finish1.config(text='         Ничья!')
 
 b = [0 for i in range(1, 10)]
@@ -363,6 +440,7 @@ bot = None
 count = 0
 
 def press_btn1():
+    # Отпабатывает кнопка соответствующей клетки игрового поля и вызывает основную функцию игры
     index = 0
     press_button_1_9(index)
 def press_btn2():
